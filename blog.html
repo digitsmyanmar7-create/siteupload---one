@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Blog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Fixed Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: #ffdd40;
+        }
+        
+        .search-icon {
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+        
+        .page-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-title p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        /* Filters */
+        .filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: #6a11cb;
+            color: white;
+            border-color: #6a11cb;
+        }
+        
+        /* Blog Posts */
+        .posts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .post-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .post-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .post-card:hover .post-image img {
+            transform: scale(1.05);
+        }
+        
+        .post-category {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: #6a11cb;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .post-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .post-date {
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .post-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .post-excerpt {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .author-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .read-more {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            background: #6a11cb;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            text-align: center;
+        }
+        
+        .read-more:hover {
+            background: #2575fc;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            background: #2c3e50;
+            color: white;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: #ffdd40;
+        }
+        
+        /* Newsletter */
+        .newsletter {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            padding: 3rem 2rem;
+            border-radius: 10px;
+            margin: 3rem 0;
+            text-align: center;
+            color: white;
+        }
+        
+        .newsletter h2 {
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-form input {
+            flex-grow: 1;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 30px 0 0 30px;
+            font-size: 1rem;
+        }
+        
+        .newsletter-form button {
+            padding: 0 1.5rem;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                gap: 1.5rem;
+            }
+            
+            .posts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            main {
+                margin-top: 140px;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .newsletter-form input,
+            .newsletter-form button {
+                border-radius: 30px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-blog"></i>
+            <span>DevBlog</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="https://digitsmyanmar.site/">Home</a></li>
+                <li><a href="#">Categories</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="search-icon">
+            <i class="fas fa-search"></i>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="page-title">
+            <h1>Latest Blog Posts</h1>
+            <p>Discover the latest insights and trends in web development</p>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-btn active">All</div>
+            <div class="filter-btn">JavaScript</div>
+            <div class="filter-btn">CSS</div>
+            <div class="filter-btn">React</div>
+            <div class="filter-btn">Web Design</div>
+            <div class="filter-btn">Tutorials</div>
+        </div>
+        
+        <div class="posts-container">
+            <!-- Post 1 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Coding">
+                    <div class="post-category">JavaScript</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">June 15, 2023</div>
+                    <h2 class="post-title">Getting Started with JavaScript</h2>
+                    <p class="post-excerpt">Learn the fundamentals of JavaScript and start your journey into web development with this comprehensive guide.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Author" class="author-avatar">
+                            <span>John Doe</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 2 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Web Design">
+                    <div class="post-category">Web Design</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">June 10, 2023</div>
+                    <h2 class="post-title">Responsive Design Principles</h2>
+                    <p class="post-excerpt">Discover the key principles of responsive web design and how to create websites that look great on all devices.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Author" class="author-avatar">
+                            <span>Jane Smith</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 3 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwa90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="CSS">
+                    <div class="post-category">CSS</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">June 5, 2023</div>
+                    <h2 class="post-title">CSS Flexbox vs Grid</h2>
+                    <p class="post-excerpt">A comparison of CSS Flexbox and Grid layout systems, and when to use each for optimal web layouts.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Author" class="author-avatar">
+                            <span>Mike Johnson</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 4 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80" alt="Coding">
+                    <div class="post-category">React</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">June 1, 2023</div>
+                    <h2 class="post-title">Introduction to React.js</h2>
+                    <p class="post-excerpt">Get started with React.js, the popular JavaScript library for building user interfaces and web applications.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Author" class="author-avatar">
+                            <span>Sarah Wilson</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 5 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1550439062-609e1531270e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Programming">
+                    <div class="post-category">Tutorials</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">May 25, 2023</div>
+                    <h2 class="post-title">Git Best Practices</h2>
+                    <p class="post-excerpt">Learn the best practices for using Git version control to improve your workflow and collaboration with others.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Author" class="author-avatar">
+                            <span>David Brown</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 6 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1164&q=80" alt="Web Development">
+                    <div class="post-category">Web Design</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">May 20, 2023</div>
+                    <h2 class="post-title">Web Performance Optimization</h2>
+                    <p class="post-excerpt">Discover techniques to make your website faster and improve user experience with performance optimization.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Author" class="author-avatar">
+                            <span>Emily Davis</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 7 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1581276879432-15e50529f34b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="HTML">
+                    <div class="post-category">HTML</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">May 15, 2023</div>
+                    <h2 class="post-title">HTML5 Semantic Elements</h2>
+                    <p class="post-excerpt">Learn how to use HTML5 semantic elements to create more meaningful and accessible web pages.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Author" class="author-avatar">
+                            <span>Robert Miller</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 8 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1627398242454-45a1465c2479?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1174&q=80" alt="JavaScript">
+                    <div class="post-category">JavaScript</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">May 10, 2023</div>
+                    <h2 class="post-title">Modern JavaScript Features</h2>
+                    <p class="post-excerpt">Explore the latest JavaScript features including ES6 and beyond to write more efficient code.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/22.jpg" alt="Author" class="author-avatar">
+                            <span>Lisa Taylor</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 9 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1581276879432-15e50529f34b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Accessibility">
+                    <div class="post-category">Web Design</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">May 5, 2023</div>
+                    <h2 class="post-title">Web Accessibility Guidelines</h2>
+                    <p class="post-excerpt">Learn how to make your websites accessible to everyone by following these practical guidelines.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/12.jpg" alt="Author" class="author-avatar">
+                            <span>James Anderson</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 10 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Node.js">
+                    <div class="post-category">Backend</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">April 28, 2023</div>
+                    <h2 class="post-title">Getting Started with Node.js</h2>
+                    <p class="post-excerpt">Learn how to set up a Node.js server and build your first backend application with JavaScript.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/42.jpg" alt="Author" class="author-avatar">
+                            <span>Maria Garcia</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 11 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Database">
+                    <div class="post-category">Database</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">April 22, 2023</div>
+                    <h2 class="post-title">SQL vs NoSQL Databases</h2>
+                    <p class="post-excerpt">A comprehensive comparison between SQL and NoSQL databases and when to use each in your projects.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/72.jpg" alt="Author" class="author-avatar">
+                            <span>Thomas Lee</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 12 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Security">
+                    <div class="post-category">Security</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date">April 15, 2023</div>
+                    <h2 class="post-title">Web Security Best Practices</h2>
+                    <p class="post-excerpt">Essential security practices every web developer should implement to protect their applications.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/52.jpg" alt="Author" class="author-avatar">
+                            <span>Sophia Chen</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+        
+        <!-- Newsletter -->
+        <div class="newsletter">
+            <h2>Subscribe to Our Newsletter</h2>
+            <p>Get the latest web development tips, tricks, and insights delivered to your inbox.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Your email address">
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+        <p>&copy; 2023 DevBlog. All rights reserved.</p>
+    </footer>
+</body>
+</html>
